@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, render_template_string
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 import json
@@ -33,20 +33,31 @@ def get_relevant_faq(user_query):
     top_faq_index = cosine_similarities.argmax()
     return faqs_list[top_faq_index]
 
+# Home route (GET) to display the form
 @app.route('/')
 def home():
-    return "Welcome to the Smart FAQ Module!"
+    return render_template_string('''
+    <form action="/faq" method="post">
+        <label for="query">Enter your query:</label>
+        <input type="text" id="query" name="query">
+        <input type="submit" value="Submit">
+    </form>
+    ''')
 
+# FAQ route (POST) to handle queries
 @app.route('/faq', methods=['POST'])
 def search_faq():
-    user_query = request.json.get('query')
+    user_query = request.form.get('query')  # Get the query from form data
     relevant_faq = get_relevant_faq(user_query)
-    
-    return jsonify({
-        'category': relevant_faq['category'],
-        'question': relevant_faq['question'],
-        'answer': relevant_faq['answer']
-    })
+
+    # Format the output using HTML
+    formatted_response = f"""
+    <h3>Category: {relevant_faq['category']}</h3>
+    <p><strong>Question:</strong> {relevant_faq['question']}</p>
+    <p><strong>Answer:</strong> {relevant_faq['answer']}</p>
+    """
+
+    return formatted_response  # Return the HTML response
 
 if __name__ == "__main__":
     app.run(debug=True)
