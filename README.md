@@ -11,5 +11,5 @@ This is a smart FAQ module built using Python and Flask. It allows users to ente
 ## How to Run the App
 1. Clone the repository:
    ```bash
-   git clone https://github.com/your-username/smart-faq-module.git
+   git clone https://github.com/Kritvi0208/smart-faq-module.git
    cd smart-faq-module
